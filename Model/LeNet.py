@@ -95,14 +95,6 @@ class UVNQLeNet_5(tf.keras.Model):
 
         return 1 - (total_remain / total_param)
 
-    def unique_params(self):
-        param_list = []
-        for layer in self.layers:
-            if isinstance(layer, UVNQDense) or isinstance(layer, UVNQConv2d):
-                layer_param = np.unique(layer.quantized_theta.numpy())
-                param_list.extend(layer_param)
-
-        return np.sort(np.unique(param_list))
 
 
 

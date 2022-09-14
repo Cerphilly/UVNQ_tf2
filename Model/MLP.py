@@ -45,15 +45,22 @@ class UVNQMLP(tf.keras.Model):
         print("step_size: ", STEP_SIZE)
         return STEP_SIZE
 
-    def quantization_test(self, input):
+    def quantization_test(self, x):
         step_size = self.calculate_step_size()
+        # step = tf.concat([tf.range(-step_size * int(self.total_Nb / 2), 0, step_size, dtype=tf.float32),
+        #                         tf.range(0, step_size * (int(self.total_Nb / 2) + 0.001), step_size, dtype=tf.float32)], 0).numpy()
 
-        x = self.flat(input)
-        x = self.fc1.quantization_test(x, step_size)
+        negative_step = np.arange(-step_size * int(np.power(2, self.total_N) / 2), 0, step_size, dtype=np.float32)
+        positive_step = np.sort(-negative_step)[:-1]
+        step = np.concatenate([negative_step, tf.constant([0.]), positive_step], axis=0)
+        step = sorted(step, key=lambda s: abs(s))
+
+        x = self.flat(x)
+        x = self.fc1.quantization_test(x, step)
         x = tf.nn.relu(x)
-        x = self.fc2.quantization_test(x, step_size)
+        x = self.fc2.quantization_test(x, step)
         x = tf.nn.relu(x)
-        x = self.fc3.quantization_test(x, step_size)
+        x = self.fc3.quantization_test(x, step)
         x = tf.nn.softmax(x)
 
         return x
@@ -76,15 +83,4 @@ class UVNQMLP(tf.keras.Model):
                 total_param += b
 
         return 1 - (total_remain / total_param)
-
-    def unique_params(self):
-        param_list = []
-        for layer in self.layers:
-            if isinstance(layer, UVNQDense) or isinstance(layer, UVNQConv2d):
-                print(layer.quantized_theta)
-                exit()
-                layer_param = np.unique(layer.quantized_theta.numpy())
-                param_list.extend(layer_param)
-
-        return np.unique(param_list).sort()
 
