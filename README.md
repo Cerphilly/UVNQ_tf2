@@ -1,8 +1,7 @@
 ![Python Depend](https://img.shields.io/badge/Python-3.6-blue) ![TF Depend](https://img.shields.io/badge/TensorFlow-2.6-orange)
 
 # UVNQ_tf2
-Implementation of **Uniform Variational Network Quantizer (UVNQ)** in **'[Quantization-Aware Pruning Criterion for Industrial Applications](https://ieeexplore.ieee.org/document/9398534)'**,<br>
-which is publicated in IEEE Transactions on Industrial Electronics in March 2022. 
+Implementation of **Uniform Variational Network Quantizer (UVNQ)** in **'[Quantization-Aware Pruning Criterion for Industrial Applications](https://ieeexplore.ieee.org/document/9398534)'**, which is publicated in IEEE Transactions on Industrial Electronics in March 2022. 
 
 # How to use
 1. First pretrain network (UVNQLeNet_5 or UVNQMLP) (set pretrain = True in train_mnist.py)
